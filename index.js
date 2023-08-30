@@ -52,7 +52,7 @@ app.delete('/api/notes/:id', (request, response) => {
 })
 
 app.put('/api/notes/:id', (request, response) => {
-  const noteId = request.params.id
+  const noteId = Number(request.params.id)
   const note = notes.find(note => note.id === noteId)
   const newNote = request.body
 
