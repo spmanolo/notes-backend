@@ -69,11 +69,8 @@ app.put('/api/notes/:id', (request, response) => {
     date: new Date().toISOString()
   }
 
-<<<<<<< HEAD
   console.log(newNoteToAdd)
 
-=======
->>>>>>> de714a268db23fc14be01690f3ae3d4c4eb8f63d
   notes = notes.filter(note => note.id !== noteId)
   notes = [...notes, newNoteToAdd]
 
