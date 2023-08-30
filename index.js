@@ -65,8 +65,8 @@ app.put('/api/notes/:id', (request, response) => {
   const newNoteToAdd = {
     id: noteId,
     content: newNote.content,
-    important: typeof newNote.important !== 'undefined' ? newNote.important : note.id,
-    date: new Date().toISOString()
+    date: new Date().toISOString(),
+    important: typeof newNote.important !== 'undefined' ? newNote.important : note.id
   }
 
   console.log(newNoteToAdd)
