@@ -1,8 +1,7 @@
-PUT http://localhost:3001/api/notes/1
+PUT https://sleepy-tundra-97805-3cced4d9040c.herokuapp.com/api/notes/4
 Content-Type: application/json
 
 {
-  "id": 3,
   "content": "hola",
-  "important": false
+  "important": true
 }
