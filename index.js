@@ -52,6 +52,8 @@ app.delete('/api/notes/:id', (request, response) => {
 })
 
 app.put('/api/notes/:id', (request, response) => {
+  const noteId = request.params.id
+  const note = notes.find(note => note.id === noteId)
   const newNote = request.body
 
   if (!newNote || !newNote.content) {
@@ -60,8 +62,17 @@ app.put('/api/notes/:id', (request, response) => {
     })
   }
 
-  notes = notes.filter(note => note.id !== newNote.id)
-  notes = [...notes, newNote]
+  const newNoteToAdd = {
+    id: noteId,
+    content: newNote.content,
+    important: typeof newNote.important !== 'undefined' ? newNote.important : note.id,
+    date: new Date().toISOString()
+  }
+
+  console.log(newNoteToAdd)
+
+  notes = notes.filter(note => note.id !== noteId)
+  notes = [...notes, newNoteToAdd]
 
   response.status(201).json(newNote)
 })
