@@ -1,1 +1,1 @@
-DELETE https://sleepy-tundra-97805-3cced4d9040c.herokuapp.com/api/notes/&content='hola'
+DELETE https://sleepy-tundra-97805-3cced4d9040c.herokuapp.com/api/notes/4
