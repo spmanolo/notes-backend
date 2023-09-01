@@ -1,3 +1,4 @@
+require('dotenv').config()
 require('./mongo.js')
 
 const express = require('express')
@@ -21,14 +22,27 @@ app.get('/api/notes', (request, response) => {
 })
 
 app.get('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const note = notes.find(note => note.id === id)
+  // const id = Number(request.params.id)
+  // const note = notes.find(note => note.id === id)
 
-  if (note) {
-    response.json(note)
-  } else {
-    response.status(404).end()
-  }
+  // if (note) {
+  //   response.json(note)
+  // } else {
+  //   response.status(404).end()
+  // }
+
+  const { id } = request.params
+
+  Note.findById(id).then(note => {
+    if (note) {
+      response.json(note)
+    } else {
+      response.status(404).end()
+    }
+  }).catch(err => {
+    console.log(err)
+    response.status(400).end()
+  })
 })
 
 app.delete('/api/notes/:id', (request, response) => {
@@ -72,19 +86,16 @@ app.post('/api/notes', (request, response) => {
     })
   }
 
-  const ids = notes.map(note => note.id)
-  const maxId = Math.max(...ids)
-
-  const newNote = {
-    id: maxId + 1,
+  const newNote = new Note({
     content: note.content,
     date: new Date().toISOString(),
     important: typeof note.important !== 'undefined' ? note.important : false
-  }
+  })
 
-  notes = [...notes, newNote]
-
-  response.status(201).json(newNote)
+  newNote.save()
+    .then(savedNote => {
+      response.status(201).json(savedNote)
+    })
 })
 
 const PORT = process.env.PORT || 3001
