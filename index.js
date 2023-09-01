@@ -4,12 +4,15 @@ require('./mongo.js')
 const express = require('express')
 const app = express()
 const cors = require('cors')
+const notFound = require('./middlewares/notFound.js')
+const handleErrors = require('./middlewares/handleErrors.js')
+
 const Note = require('./models/Note.js')
 
 app.use(express.json())
 app.use(cors())
 
-let notes = []
+const notes = []
 
 app.get('/', (request, response) => {
   response.send('<h1>Hola</h1>')
@@ -21,7 +24,7 @@ app.get('/api/notes', (request, response) => {
   })
 })
 
-app.get('/api/notes/:id', (request, response) => {
+app.get('/api/notes/:id', (request, response, next) => {
   // const id = Number(request.params.id)
   // const note = notes.find(note => note.id === id)
 
@@ -42,43 +45,38 @@ app.get('/api/notes/:id', (request, response) => {
       }
     })
     .catch(err => {
-      console.log(err)
-      response.status(400).end()
+      next(err)
     })
 })
 
-// NO ACTUALIZADA PARA DB
-app.delete('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id)
-  notes = notes.filter(note => note.id !== id)
-  response.status(204).end()
+app.delete('/api/notes/:id', (request, response, next) => {
+  const { id } = request.params
+
+  Note.findByIdAndRemove(id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(err => {
+      next(err)
+    })
 })
 
-// NO ACTUALIZADA PARA DB
-app.put('/api/notes/:id', (request, response) => {
-  const noteId = Number(request.params.id)
-  const note = notes.find(note => note.id === noteId)
+app.put('/api/notes/:id', (request, response, next) => {
+  const { id } = request.params
   const newNote = request.body
 
-  if (!newNote || !newNote.content) {
-    return response.status(400).json({
-      error: 'note.content is missing'
-    })
-  }
-
   const newNoteToAdd = {
-    id: noteId,
     content: newNote.content,
-    date: new Date().toISOString(),
-    important: typeof newNote.important !== 'undefined' ? newNote.important : note.id
+    important: newNote.important
   }
 
-  console.log(newNoteToAdd)
-
-  notes = notes.filter(note => note.id !== noteId)
-  notes = [...notes, newNoteToAdd]
-
-  response.status(201).json(newNote)
+  Note.findByIdAndUpdate(id, newNoteToAdd, { new: true })
+    .then(updatedNote => {
+      response.status(201).json(updatedNote)
+    })
+    .catch(err => {
+      next(err)
+    })
 })
 
 app.post('/api/notes', (request, response) => {
@@ -101,6 +99,11 @@ app.post('/api/notes', (request, response) => {
       response.status(201).json(savedNote)
     })
 })
+
+// unknown endpoint
+app.use(notFound)
+
+app.use(handleErrors)
 
 const PORT = process.env.PORT || 3001
 

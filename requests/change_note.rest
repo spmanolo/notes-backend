@@ -1,7 +1,7 @@
-PUT https://sleepy-tundra-97805-3cced4d9040c.herokuapp.com/api/notes/4
+PUT http://localhost:3001/api/notes/64f093817b43d1e6311ab4b3
 Content-Type: application/json
 
 {
-  "content": "hola",
-  "important": true
+  "content": "MongoDB es increible",
+  "important": false
 }

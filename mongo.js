@@ -8,3 +8,8 @@ mongoose.connect(connectionString)
   }).catch(err => {
     console.log(err)
   })
+
+// desconectar cuando haya algun error
+process.on('uncaughtException', () => {
+  mongoose.connection.disconnect()
+})
