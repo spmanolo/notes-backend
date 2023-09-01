@@ -22,6 +22,8 @@
   },
   "eslintConfig": {
     "extends": "./node_modules/standard/eslintrc.json",
-    "rules": {}
+    "rules": {
+      "no-unused-vars": "off"
+    }
   }
 }
