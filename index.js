@@ -33,24 +33,28 @@ app.get('/api/notes/:id', (request, response) => {
 
   const { id } = request.params
 
-  Note.findById(id).then(note => {
-    if (note) {
-      response.json(note)
-    } else {
-      response.status(404).end()
-    }
-  }).catch(err => {
-    console.log(err)
-    response.status(400).end()
-  })
+  Note.findById(id)
+    .then(note => {
+      if (note) {
+        response.json(note)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(err => {
+      console.log(err)
+      response.status(400).end()
+    })
 })
 
+// NO ACTUALIZADA PARA DB
 app.delete('/api/notes/:id', (request, response) => {
   const id = Number(request.params.id)
   notes = notes.filter(note => note.id !== id)
   response.status(204).end()
 })
 
+// NO ACTUALIZADA PARA DB
 app.put('/api/notes/:id', (request, response) => {
   const noteId = Number(request.params.id)
   const note = notes.find(note => note.id === noteId)
