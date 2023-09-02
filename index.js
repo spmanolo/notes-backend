@@ -74,9 +74,7 @@ app.put('/api/notes/:id', (request, response, next) => {
     .then(updatedNote => {
       response.status(201).json(updatedNote)
     })
-    .catch(err => {
-      next(err)
-    })
+    .catch(next)
 })
 
 app.post('/api/notes', (request, response) => {
@@ -94,10 +92,7 @@ app.post('/api/notes', (request, response) => {
     important: typeof note.important !== 'undefined' ? note.important : false
   })
 
-  newNote.save()
-    .then(savedNote => {
-      response.status(201).json(savedNote)
-    })
+  newNote.save().then(savedNote => { response.json(savedNote) })
 })
 
 // unknown endpoint
