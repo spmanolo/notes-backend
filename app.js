@@ -12,7 +12,6 @@ const mongoose = require('mongoose')
 
 mongoose.connect(config.connectionString)
   .then(() => {
-    logger.info(config.connectionString)
     logger.info('Database connect')
   }).catch(err => {
     logger.error('error connecting to MongoDB:', err.message)
