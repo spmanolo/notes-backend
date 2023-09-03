@@ -9,7 +9,7 @@ const mongoose = require('mongoose')
 
 // logger.info('connecting to', config.MONGODB_URI)
 
-mongoose.connect(config.MONGODB_URI)
+mongoose.connect(config.connectionString)
   .then(() => {
     logger.info('Database connect')
   }).catch(err => {
