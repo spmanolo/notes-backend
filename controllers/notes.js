@@ -1,17 +1,24 @@
 const notesRouter = require('express').Router()
 const Note = require('../models/note')
+const User = require('../models/user')
 
-notesRouter.get('/', async (request, response) => {
-  const notes = await Note.find({})
-  response.json(notes)
+notesRouter.get('/', async (request, response, next) => {
+  try {
+    const notes = await Note
+      .find({})
+      .populate('user', { username: 1, name: 1 })
+    response.json(notes)
+  } catch (e) {
+    next(e)
+  }
 })
 
 notesRouter.get('/:id', async (request, response, next) => {
-  const note = await Note.findById(request.params.id)
-  if (note) {
+  try {
+    const note = await Note.findById(request.params.id)
     response.json(note)
-  } else {
-    response.status(404).end()
+  } catch (e) {
+    next(e)
   }
 })
 
@@ -24,32 +31,43 @@ notesRouter.put('/:id', async (request, response, next) => {
     important: newNote.important
   }
 
-  const updatedNote = await Note.findByIdAndUpdate(id, newNoteToAdd, { new: true })
-  response.status(201).json(updatedNote)
+  try {
+    const updatedNote = await Note.findByIdAndUpdate(id, newNoteToAdd, { new: true })
+    response.status(201).json(updatedNote)
+  } catch (e) {
+    next(e)
+  }
 })
 
-notesRouter.delete('/:id', async (request, response) => {
-  await Note.findByIdAndRemove(request.params.id)
-  response.status(204).end()
+notesRouter.delete('/:id', async (request, response, next) => {
+  try {
+    await Note.findByIdAndRemove(request.params.id)
+    response.status(204).end()
+  } catch (e) {
+    next(e)
+  }
 })
 
 notesRouter.post('/', async (request, response, next) => {
   const note = request.body
 
-  // if (!note || !note.content) {
-  //   return response.status(400).json({
-  //     error: 'note.content is missing'
-  //   })
-  // }
+  const user = await User.findById(note.userId)
 
   const newNote = new Note({
     content: note.content,
     important: typeof note.important !== 'undefined' ? note.important : false,
-    date: new Date().toISOString()
+    date: new Date().toISOString(),
+    user: user._id
   })
 
-  const savedNote = await newNote.save()
-  response.json(savedNote)
+  try {
+    const savedNote = await newNote.save()
+    user.notes = user.notes.concat(savedNote._id)
+    await user.save()
+    response.status(201).json(savedNote)
+  } catch (e) {
+    next(e)
+  }
 })
 
 module.exports = notesRouter
