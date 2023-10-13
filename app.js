@@ -3,13 +3,19 @@ const express = require('express')
 require('express-async-errors')
 const app = express()
 const cors = require('cors')
+
+// Controllers
 const notesRouter = require('./controllers/notes.js')
 const usersRouter = require('./controllers/users.js')
-const { requestLogger, unknownEndpoint, errorHandler } = require('./utils/middlewares.js')
+const loginRouter = require('./controllers/login.js')
+
+// Middlewares
+const requestLogger = require('./middlewares/requestLogger.js')
+const unknownEndpoint = require('./middlewares/notFound.js')
+const errorHandler = require('./middlewares/handleErrors.js')
+
 const logger = require('./utils/logger.js')
 const mongoose = require('mongoose')
-
-// logger.info('connecting to', config.MONGODB_URI)
 
 mongoose.connect(config.connectionString)
   .then(() => {
@@ -24,6 +30,7 @@ app.use(requestLogger)
 
 app.use('/api/notes', notesRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/login', loginRouter)
 
 app.use(unknownEndpoint)
 app.use(errorHandler)
