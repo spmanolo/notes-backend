@@ -15,9 +15,9 @@ usersRouter.get('/', async (request, response, next) => {
 
 usersRouter.post('/', async (request, response, next) => {
   try {
-    const user = request.body
+    const { username, name, password } = request.body
 
-    if (!user.password) {
+    if (!password) {
       next({
         name: 'ValidationError',
         message: 'Password is missing'
@@ -25,20 +25,18 @@ usersRouter.post('/', async (request, response, next) => {
     }
 
     const saltRounds = 10
-    const passwordHash = await bcrypt.hash(user.password, saltRounds)
+    const passwordHash = await bcrypt.hash(password, saltRounds)
 
     const newUser = new User({
-      username: user.username,
-      name: user.name,
+      username,
+      name,
       passwordHash
     })
 
     const savedUser = await newUser.save()
     response.status(201).json(savedUser)
   } catch (error) {
-    response.status(400).json({
-      error
-    })
+    response.status(400).json(error)
   }
 })
 

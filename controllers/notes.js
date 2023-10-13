@@ -2,6 +2,16 @@ const notesRouter = require('express').Router()
 const Note = require('../models/note')
 const User = require('../models/user')
 
+const userExtractor = require('../middlewares/userExtractor.js')
+
+// function getTokenFrom(request) {
+//   const authorization = request.get('authorization')
+//   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+//     return authorization.substring(7)
+//   }
+//   return null
+// }
+
 notesRouter.get('/', async (request, response, next) => {
   try {
     const notes = await Note
@@ -22,7 +32,7 @@ notesRouter.get('/:id', async (request, response, next) => {
   }
 })
 
-notesRouter.put('/:id', async (request, response, next) => {
+notesRouter.put('/:id', userExtractor, async (request, response, next) => {
   const { id } = request.params
   const newNote = request.body
 
@@ -39,7 +49,7 @@ notesRouter.put('/:id', async (request, response, next) => {
   }
 })
 
-notesRouter.delete('/:id', async (request, response, next) => {
+notesRouter.delete('/:id', userExtractor, async (request, response, next) => {
   try {
     await Note.findByIdAndRemove(request.params.id)
     response.status(204).end()
@@ -48,10 +58,12 @@ notesRouter.delete('/:id', async (request, response, next) => {
   }
 })
 
-notesRouter.post('/', async (request, response, next) => {
+notesRouter.post('/', userExtractor, async (request, response, next) => {
   const note = request.body
 
-  const user = await User.findById(note.userId)
+  const { userId } = request
+
+  const user = await User.findById(userId)
 
   const newNote = new Note({
     content: note.content,
