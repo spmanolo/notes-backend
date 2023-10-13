@@ -2,7 +2,7 @@ const supertest = require('supertest')
 const app = require('../app.js')
 const mongoose = require('mongoose')
 const { server } = require('../index.js')
-const { initialNotes, nonExistingId, notesInDb, usersInDb } = require('./test_helper.js')
+const { initialNotes, nonExistingId, notesInDb, usersInDb } = require('../utils/test_helper.js')
 const bcrypt = require('bcrypt')
 
 const Note = require('../models/note.js')
@@ -17,7 +17,7 @@ beforeEach(async () => {
   await Promise.all(promiseArray) // espera a que todas las operaciones async acaben
 })
 
-describe.skip('when theres initially some notes saved', () => {
+describe('when theres initially some notes saved', () => {
   test('notes are returned as json', async () => {
     await api
       .get('/api/notes')
@@ -31,7 +31,7 @@ describe.skip('when theres initially some notes saved', () => {
   })
 })
 
-describe.skip('viewing a specific note', () => {
+describe('viewing a specific note', () => {
   test('a specific note can be viewed', async () => {
     const notesAtStart = await notesInDb()
     const noteToView = notesAtStart[0]
@@ -73,17 +73,21 @@ describe.skip('viewing a specific note', () => {
   })
 })
 
-describe.skip('adding a note', async () => {
+describe('adding a note', () => {
   test('a valid note can be added', async () => {
+    const users = await usersInDb()
+    const { id } = users[0]
+
     const newNote = {
       content: 'async/awaitsimplifies making async calls',
-      important: true
+      important: true,
+      userId: id
     }
 
     await api
       .post('/api/notes')
       .send(newNote)
-      .expect(200)
+      .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const notesAtEnd = await notesInDb()
@@ -109,7 +113,7 @@ describe.skip('adding a note', async () => {
   })
 })
 
-describe.skip('deletion of a note', async () => {
+describe('deletion of a note', () => {
   test('a note can be deleted', async () => {
     const notesAtStart = await notesInDb()
     const noteToDelete = notesAtStart[0]

@@ -64,8 +64,8 @@ describe('when theres initially one user in db', () => {
     const usersAtStart = await usersInDb()
 
     const newUser = {
-      username: 'mluukkai',
-      password: 1234
+      username: 'root',
+      password: '1234'
     }
 
     const result = await api
@@ -74,7 +74,7 @@ describe('when theres initially one user in db', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
-    expect(result.body.error).toContain('`username` to be unique')
+    expect(result.body.errors.username.message).toContain('`username` to be unique')
 
     const usersAtEnd = await usersInDb()
 
