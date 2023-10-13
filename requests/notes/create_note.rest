@@ -10,9 +10,9 @@ Content-Type: application/json
 
 POST http://localhost:3001/api/notes
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlbml0byIsImlkIjoiNjUyNTdmNTIxNzBmNTlhOGI0OWI5Zjg0IiwiaWF0IjoxNjk2OTY4Njk2LCJleHAiOjE2OTY5NzIyOTZ9.h3ZLDfhq2x2sznDcWixmNI_xF_Iwyv7r_wfOTJMv4xA
 
 {
-  "content": "Esta es la segunda nota de manolo",
-  "important": true,
-  "userId": "651efa04cafac4b535ebbe57" 
+  "content": "Esta es otra nueva nota",
+  "important": true
 }
