@@ -1,6 +1,19 @@
 const Note = require('../models/note.js')
 const User = require('../models/user.js')
 
+const initialUsers = [
+  {
+    username: 'jose',
+    name: 'Jose',
+    password: 'jose'
+  },
+  {
+    username: 'pepe',
+    name: 'Pepe',
+    password: 'pepe'
+  }
+]
+
 const initialNotes = [
   {
     content: 'Aprendiendo FullStack JS',
@@ -37,6 +50,7 @@ async function usersInDb() {
 
 module.exports = {
   initialNotes,
+  initialUsers,
   nonExistingId,
   notesInDb,
   usersInDb
