@@ -61,9 +61,9 @@ notesRouter.delete('/:id', userExtractor, async (request, response, next) => {
 notesRouter.post('/', userExtractor, async (request, response, next) => {
   const note = request.body
 
-  const { userId } = request
+  const { userID } = request
 
-  const user = await User.findById(userId)
+  const user = await User.findById(userID)
 
   const newNote = new Note({
     content: note.content,
